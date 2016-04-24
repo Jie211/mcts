@@ -112,7 +112,8 @@ class Othello:
 
     def GetPoint(self, player):
         point = len([ (i, j) for i in xrange(self.size) for j in xrange(self.size) if self.board[i][j] == player  ])
-        return str(player)+" "+str(point)
+        # return str(player)+" "+str(point)
+        return point
 
     def __repr__(self):
         s=""
@@ -177,7 +178,7 @@ class Node:
         return s
 
     def __repr__(self):
-        return "+[ Move: " + str(self.move) + " NextCanMove: "+str(self.canMoveStep) +" Visit: " + str(self.visit) + " ]"
+        return "+[ Move: " + str(self.move) + " NextCanMove: " + str(self.canMoveStep) + " Win: " + str(self.win) + " Visit: " + str(self.visit) + " ]"
 
 def MCTS(rootgame, times, verbose=False):
 
@@ -210,41 +211,94 @@ def MCTS(rootgame, times, verbose=False):
     if verbose:
         print rootnode.GetTree(0)
     else:
-        print rootnode.GetChild()
+        pass
+        # print rootnode.GetChild()
 
     valueable = sorted(rootnode.childNode, key = lambda i: i.visit)[-1].move
     return valueable
 
+def RandAI(game):
+    candidate = game.GetCanMove()
+    return random.choice(candidate)
+
+def ScoreMax(game):
+    candidate = game.GetCanMove()
+    points = {}
+    for i in candidate:
+        thisgame=game.DeepCopy(game.size)
+        thisgame.DoMove(i)
+        p=thisgame.GetPoint(game.lastMoved)
+        if not points.has_key(p):
+            points[p]=[]
+        points[p].append(i)
+
+    max_point = max(points)
+    max_candidate = points[max_point]
+    return random.choice(max_candidate)
+
+        
+
+
+
 
 def PlayGame():
-    # AllVerbose = False
-    AllVerbose = True
-    game = Othello(6)
+    verbose1 = False
+    # verbose1 = True
 
-    while(game.GetCanMove() != []):
-        if AllVerbose : 
-            print str(game)
-            print 'Can->'+str(game.GetCanMove())
-        if game.lastMoved == 'B':
-            m = MCTS(rootgame = game, times = 100, verbose=AllVerbose)
-            if AllVerbose : print "W",
+    verbose2 = False
+    # verbose2 = True
+
+    Wtotalwin = 0
+    Btotalwin = 0
+
+    testtime = 100
+    nowtime = 0
+
+    while( nowtime < testtime  ):
+    
+        game = Othello(6)
+
+        while(game.GetCanMove() != []):
+            if verbose1 : 
+                print str(game)
+                print 'Can->'+str(game.GetCanMove())
+            if game.lastMoved == 'B':
+                # -> white
+                # m = MCTS(rootgame = game, times = 100, verbose = verbose2)
+                # m = RandAI(game) 
+                m = ScoreMax(game) 
+                if verbose1 : print "W",
+            else:
+                # -> black
+                m = MCTS(rootgame = game, times = 50, verbose = verbose2)
+                if verbose1 : print "B",
+            game.DoMove(m)
+            if verbose1 : print "Do-> "+str(m)+"\n"
+
+        # if verbose1:
+        #     print str(game)
+        #     print game.GetPoint(game.lastMoved)
+        #     print game.GetPoint(game.GetOpponent(game.lastMoved))
+
+        if game.GetScore(game.lastMoved) == 1.0:
+            print str(game.lastMoved) + " win"
+            if game.lastMoved == 'W':
+                Wtotalwin+=1
+            else:
+                Btotalwin+=1
+        elif game.GetScore(game.lastMoved) == 0.0:
+            print str(game.GetOpponent(game.lastMoved)) + " win"
+            if game.lastMoved == 'W':
+                Btotalwin+=1
+            else:
+                Wtotalwin+=1
         else:
-            m = MCTS(rootgame = game, times = 200, verbose=AllVerbose)
-            if AllVerbose : print "B",
-        game.DoMove(m)
-        if AllVerbose : print "Do-> "+str(m)+"\n"
-
-    if AllVerbose:
-        print str(game)
-        print game.GetPoint(game.lastMoved)
-        print game.GetPoint(game.GetOpponent(game.lastMoved))
-
-    if game.GetScore(game.lastMoved) == 1.0:
-        print str(game.lastMoved) + " win"
-    elif game.GetScore(game.lastMoved) == 0.0:
-        print str(game.GetOpponent(game.lastMoved)) + " win"
-    else:
-        print "draw"
+            print "draw"
+        
+        nowtime+=1
+        print "--------------------"
+        print "White : "+str(Wtotalwin)
+        print "Black : "+str(Btotalwin)
 
 if __name__ == "__main__":
     PlayGame()
