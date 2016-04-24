@@ -1,0 +1,34 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+AddChild	Game.py	/^    def AddChild(self, m, g):$/;"	m	class:Node
+DeepCopy	Game.py	/^    def DeepCopy(self, size):$/;"	m	class:Othello
+DoMove	Game.py	/^    def DoMove(self, move):$/;"	m	class:Othello
+GetCanFilp	Game.py	/^    def GetCanFilp(self, x, y):$/;"	m	class:Othello
+GetCanMove	Game.py	/^    def GetCanMove(self):$/;"	m	class:Othello
+GetChild	Game.py	/^    def GetChild(self):$/;"	m	class:Node
+GetDeep	Game.py	/^    def GetDeep(self, deep):$/;"	m	class:Node
+GetFilpList	Game.py	/^    def GetFilpList(self, x, y, dx, dy):$/;"	m	class:Othello
+GetOpponent	Game.py	/^    def GetOpponent(self, player):$/;"	m	class:Othello
+GetPoint	Game.py	/^    def GetPoint(self, player):$/;"	m	class:Othello
+GetScore	Game.py	/^    def GetScore(self, player):$/;"	m	class:Othello
+GetTree	Game.py	/^    def GetTree(self, deep):$/;"	m	class:Node
+IsCanFilp	Game.py	/^    def IsCanFilp(self, x, y):$/;"	m	class:Othello
+IsOnBoard	Game.py	/^    def IsOnBoard(self, x, y):$/;"	m	class:Othello
+MCTS	Game.py	/^def MCTS(rootgame, times, verbose=False):$/;"	f
+NearOpponentDirections	Game.py	/^    def NearOpponentDirections(self, x, y):$/;"	m	class:Othello
+Node	Game.py	/^class Node:$/;"	c
+Othello	Game.py	/^class Othello:$/;"	c
+PlayGame	Game.py	/^def PlayGame():$/;"	f
+TryFilp	Game.py	/^    def TryFilp(self, x, y):$/;"	m	class:Othello
+UCT	Game.py	/^    def UCT(self):$/;"	m	class:Node
+Upload	Game.py	/^    def Upload(self, score):$/;"	m	class:Node
+__init__	Game.py	/^    def __init__ (self, size):$/;"	m	class:Othello
+__init__	Game.py	/^    def __init__(self, move = None, parent = None, game = None):$/;"	m	class:Node
+__repr__	Game.py	/^    def __repr__(self):$/;"	m	class:Node	file:
+__repr__	Game.py	/^    def __repr__(self):$/;"	m	class:Othello	file:
+random	Game.py	/^import random$/;"	i
+sys	Game.py	/^import sys$/;"	i
