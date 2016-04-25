@@ -12,7 +12,9 @@ def MCTS(rootgame, times, verbose=False):
 
     rootnode = Node(game = rootgame)
 
-    for i in xrange(times):
+    len_candidate = len(rootnode.canMoveStep)
+
+    for i in xrange(times * len_candidate):
         node = rootnode
         game = rootgame.DeepCopy(rootgame.size)
 

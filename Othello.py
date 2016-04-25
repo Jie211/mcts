@@ -3,6 +3,8 @@ from math import *
 import sys
 import random
 
+# from joblib import Parallel, delayed
+
 class Othello:
     def __init__ (self, size):
         self.size = size
@@ -79,12 +81,41 @@ class Othello:
         else:
             return 'W'
 
+    def Process(self, i, x, y, direction):
+        dx = direction[i][0]
+        dy = direction[i][1]
+        if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
+            return (dx, dy)
+        return None
+
     def NearOpponentDirections(self, x, y):
         near = []
         for (dx, dy) in [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]:
             if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
                 near.append((dx, dy))
         return near
+
+        # near = []
+        # direction = [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]
+        # dir_len = len(direction)
+        # for i in xrange(dir_len):
+        #     dx=direction[i][0]
+        #     dy=direction[i][1]
+        #     if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
+        #         near.append((dx, dy))
+        # # print near
+        # return near
+
+        # near = []
+        # direction = [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]
+        # dir_len = len(direction)
+        # # for i in xrange(dir_len):
+        #     # get = self.Process(i, x, y, direction)
+        #     # if get != None:near.append(get)
+        # print Parallel(n_jobs=-1)([delayed(self.Process)(i, x, y, direction) for i in xrange(dir_len)])
+        # return near
+
+
 
     def IsOnBoard(self, x, y):
         if x>=0 and x<self.size and y>=0 and y<self.size :

@@ -8,8 +8,8 @@ from Othello import Othello
 from Ai import *
     
 def PlayGame():
-    # verbose1 = False
-    verbose1 = True
+    verbose1 = False
+    # verbose1 = True
 
     verbose2 = False
     # verbose2 = True
@@ -31,16 +31,16 @@ def PlayGame():
             if game.lastMoved == 'B':
                 # -> white
                 # m = MCTS(rootgame = game, times = 100, verbose = verbose2)
-                # m = RandAI(game) 
+                m = RandAI(game) 
                 # m = ScoreMax(game) 
-                m = MC(game, 100, verbose = verbose2) 
+                # m = MC(game, 100, verbose = verbose2) 
                 # m = ProbabilitySelect(game) 
                 # m = Less_chance(game) 
                 if verbose1 : print "W",
             else:
                 # -> black
-                m = MCTS(rootgame = game, times = 50, verbose = verbose2)
-                # m = RandAI(game)
+                # m = MCTS(rootgame = game, times = 100, verbose = verbose2)
+                m = RandAI(game)
                 if verbose1 : print "B",
             game.DoMove(m)
             if verbose1 : print "Do-> "+str(m)+"\n"
