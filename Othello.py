@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+
+## 
+# @file Othello.py
+# @Synopsis  othello game
+# @author Gong Chen <jie211.jp@gmail.com>
+# @version 1.0
+# @date 2016-04-25
+# This is free and unencumbered code released into the public domain.
+
 from math import *
 import sys
 import random
@@ -6,23 +15,40 @@ import random
 # from joblib import Parallel, delayed
 
 class Othello:
+# -------------------------------
+## 
+# @Synopsis  __init__ コンストラクタ
+# 
+# @Param 盤面サイズ
+# 
+# @Returns  なし 
+# ---------------------------------
     def __init__ (self, size):
         self.size = size
-        assert size == int(size) and size % 2 == 0, "size must be integer and even number."
+        assert size == int(size) and size % 2 == 0 and size <= 9, "size must be integer and even number, size must <= 9."
         self.board = [['N' for i in xrange(size)] for j in xrange(size)]
+        #盤面データにNが石なし, Bが黒, Wが白
         self.lastMoved = 'W'
         self.board[size/2][size/2] = self.board[size/2-1][size/2-1] = 'B'
         self.board[size/2][size/2-1] = self.board[size/2-1][size/2] = 'W'
 
+# -------------------------------
+## 
+# @Synopsis  GetCanMove 打てる石を探す
+# 
+# @Returns  打てる石 
+# ---------------------------------
     def GetCanMove(self):
-        # l=[]
-        # for i in xrange(self.size):
-        #     for j in xrange(self.size):
-        #         if self.board[i][j] == 'N' and self.IsCanFilp(i, j):
-        #             l.append([i, j])
-        # return l
         return [(x,y) for x in xrange(self.size) for y in xrange(self.size) if self.board[x][y] == 'N' and self.IsCanFilp(x, y)]
 
+# -------------------------------
+## 
+# @Synopsis  DeepCopy 盤面をコピーする
+# 
+# @Param size
+# 
+# @Returns   
+# ---------------------------------
     def DeepCopy(self, size):
         o = Othello(self.size)
         o.lastMoved = self.lastMoved
@@ -30,6 +56,14 @@ class Othello:
         o.size = self.size
         return o
 
+# -------------------------------
+## 
+# @Synopsis  DoMove 手を打つ
+# 
+# @Param 打つ場所
+# 
+# @Returns   
+# ---------------------------------
     def DoMove(self, move):
         lastplayer=self.lastMoved
         nextplayer=self.GetOpponent(lastplayer)
@@ -43,24 +77,47 @@ class Othello:
         for (i,j) in m:
             self.board[i][j] = self.lastMoved
 
+# -------------------------------
+## 
+# @Synopsis  IsCanFilp ひっくり返すかどうかを確認する
+# 
+# @Param x x座標
+# @Param y y座標
+# 
+# @Returns   
+# ---------------------------------
     def IsCanFilp(self, x, y):
         for (dx, dy) in self.NearOpponentDirections(x, y):
             if len(self.GetFilpList(x, y, dx, dy)) > 0:
                 return True
         return False
 
+# -------------------------------
+## 
+# @Synopsis  GetCanFilp 全部のひっくり返し可能なリストを返す
+# 
+# @Param x
+# @Param y
+# 
+# @Returns  リスト 
+# ---------------------------------
     def GetCanFilp(self, x, y):
         l=[]
         for (dx, dy) in self.NearOpponentDirections(x, y):
             l.extend(self.GetFilpList(x, y, dx, dy))
         return l
 
-    # def TryFilp(self, x, y):
-    #     for (dx, dy) in [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]:
-    #         if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
-    #             return True
-    #     return False
-
+# -------------------------------
+## 
+# @Synopsis  GetFilpList 一つの座標からひっくり返し石のリストを返す
+# 
+# @Param x
+# @Param y
+# @Param dx
+# @Param dy
+# 
+# @Returns   
+# ---------------------------------
     def GetFilpList(self, x, y, dx, dy):
         fl = []
         x += dx
@@ -74,6 +131,14 @@ class Othello:
         else:
             return []
     
+# -------------------------------
+## 
+# @Synopsis  GetOpponent 相手の身分を返す
+# 
+# @Param player
+# 
+# @Returns   
+# ---------------------------------
     def GetOpponent(self, player):
         assert player=='W' or player=='B'
         if player == 'W':
@@ -81,30 +146,22 @@ class Othello:
         else:
             return 'W'
 
-    def Process(self, i, x, y, direction):
-        dx = direction[i][0]
-        dy = direction[i][1]
-        if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
-            return (dx, dy)
-        return None
 
+# -------------------------------
+## 
+# @Synopsis  NearOpponentDirections 周りに敵が存在するかどうか
+# 
+# @Param x
+# @Param y
+# 
+# @Returns   
+# ---------------------------------
     def NearOpponentDirections(self, x, y):
         near = []
         for (dx, dy) in [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]:
             if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
                 near.append((dx, dy))
         return near
-
-        # near = []
-        # direction = [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]
-        # dir_len = len(direction)
-        # for i in xrange(dir_len):
-        #     dx=direction[i][0]
-        #     dy=direction[i][1]
-        #     if self.IsOnBoard(x+dx, y+dy) and self.board[x+dx][y+dy] == self.lastMoved:
-        #         near.append((dx, dy))
-        # # print near
-        # return near
 
         # near = []
         # direction = [(0, +1), (+1, +1), (+1, 0), (+1, -1), (0, -1), (-1, -1), (-1, 0), (-1, +1)]
@@ -117,12 +174,29 @@ class Othello:
 
 
 
+# -------------------------------
+## 
+# @Synopsis  IsOnBoard 盤面にいるがどうか
+# 
+# @Param x
+# @Param y
+# 
+# @Returns   
+# ---------------------------------
     def IsOnBoard(self, x, y):
         if x>=0 and x<self.size and y>=0 and y<self.size :
             return True
         else:
             return False
 
+# -------------------------------
+## 
+# @Synopsis  GetScore 勝敗をチェックする
+# 
+# @Param player
+# 
+# @Returns   
+# ---------------------------------
     def GetScore(self, player):
         thisplayer = player
         oppoplayer = self.GetOpponent(player)
@@ -135,18 +209,31 @@ class Othello:
         else:
             return 0.5
 
+# -------------------------------
+## 
+# @Synopsis  GetPoint 得点を計算する
+# 
+# @Param player
+# 
+# @Returns   
+# ---------------------------------
     def GetPoint(self, player):
         point = len([ (i, j) for i in xrange(self.size) for j in xrange(self.size) if self.board[i][j] == player  ])
         # return str(player)+" "+str(point)
         return point
 
+# -------------------------------
+## 
+# @Synopsis  __repr__ オブジェクトを文字列にする
+# 
+# @Returns   
+# ---------------------------------
     def __repr__(self):
         s=""
         num=' '
         for i in xrange(self.size):
             num+=' '+str(i)
         s += num+"\n"
-        # for y in xrange(self.size-1, -1, -1):
         for y in xrange(self.size):
             s += str(y)+"|"
             for x in xrange(self.size):

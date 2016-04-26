@@ -1,4 +1,13 @@
 # -*- coding: utf-8 -*-
+
+## 
+# @file PlayGame.py
+# @Synopsis ゲーム全体の流れ
+# @author Gong Chen <jie211.jp@gmail.com>
+# @version 1.0
+# @date 2016-04-25
+# This is free and unencumbered code released into the public domain.
+
 from math import *
 import sys
 import random
@@ -22,34 +31,35 @@ def PlayGame():
 
     while( nowtime < testtime  ):
     
-        game = Othello(6)
+        #8x8のオセロのゲームを生成する
+        game = Othello(8)
 
+        #まだ打てる手があるならゲームを続ける
         while(game.GetCanMove() != []):
             if verbose1 : 
                 print repr(game)
                 print 'Can->'+str(game.GetCanMove())
+            
+            #使えるAI
+            # MCTS(rootgame=game, times=100, verbose=False)
+            # MC(rootgame=game, times=100, verbose=False)
+            # ScoreMax(gmae)
+            # ProbabilitySelect(game)
+            # Less_chance(game)
+            # RandAI(game)
+
             if game.lastMoved == 'B':
-                # -> white
-                # m = MCTS(rootgame = game, times = 100, verbose = verbose2)
-                m = RandAI(game) 
-                # m = ScoreMax(game) 
-                # m = MC(game, 100, verbose = verbose2) 
-                # m = ProbabilitySelect(game) 
-                # m = Less_chance(game) 
+                #  white 白のAI
+                m = MC(game, 100, False) 
                 if verbose1 : print "W",
             else:
-                # -> black
-                # m = MCTS(rootgame = game, times = 100, verbose = verbose2)
+                # black 黒のAI
                 m = RandAI(game)
                 if verbose1 : print "B",
             game.DoMove(m)
             if verbose1 : print "Do-> "+str(m)+"\n"
 
-        # if verbose1:
-        #     print str(game)
-        #     print game.GetPoint(game.lastMoved)
-        #     print game.GetPoint(game.GetOpponent(game.lastMoved))
-
+        #勝敗の表示
         if game.GetScore(game.lastMoved) == 1.0:
             print str(game.lastMoved) + " win"
             if game.lastMoved == 'W':
